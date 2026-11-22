@@ -12,6 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
     <!-- Font Awesome for Crisp Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- jsPDF for Instant Client-Side PDF Resume Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -153,11 +155,11 @@
                         <div class="absolute -inset-2 bg-gradient-to-tr from-brand-600 to-sky-400 rounded-3xl opacity-15 blur-lg"></div>
                         
                         <div class="relative bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-xl">
-                            <!-- Profile Image Container with Graceful Fallback & Interactive Upload -->
+                            <!-- Profile Image Container with Public LinkedIn URL & Local Fallback -->
                             <div class="relative rounded-2xl overflow-hidden bg-slate-100 aspect-[4/4] mb-5 border border-slate-100 group">
                                 <img 
                                     id="profile-photo"
-                                    src="./1770307243504 (1).png" 
+                                    src="https://media.licdn.com/dms/image/v2/D4D03AQFDp8mT0_3ptw/profile-displayphoto-scale_400_400/B4DZwuiMPrIgAg-/0/1770307243625?e=1796860800&v=beta&t=tZ2w8d8lfd4wsdGPzvDDKDD4S98NSf-kGPkJw2k9GIM" 
                                     alt="Mayuri Nimbhore - Aspiring Product Manager & Product Analyst" 
                                     onerror="handleProfileImageError(this)"
                                     class="w-full h-full object-cover object-top transition-transform duration-300"
@@ -167,12 +169,6 @@
                                     <i class="fa-solid fa-location-dot text-rose-500"></i>
                                     <span>Pune, Maharashtra</span>
                                 </div>
-                                <!-- Interactive Photo Picker Button (Works in sandboxed previews & local files) -->
-                                <label for="photo-upload-input" class="absolute top-3 right-3 bg-slate-900/80 hover:bg-brand-600 text-white backdrop-blur-sm px-3 py-1.5 rounded-xl text-xs font-semibold shadow-sm flex items-center space-x-1.5 cursor-pointer transition-colors" title="Upload or preview your profile photo">
-                                    <i class="fa-solid fa-camera"></i>
-                                    <span>Set Photo</span>
-                                </label>
-                                <input type="file" id="photo-upload-input" accept="image/*" class="hidden" onchange="previewUploadedPhoto(event)">
                             </div>
 
                             <!-- Quick Highlights Grid -->
@@ -346,11 +342,21 @@
                             </div>
 
                             <ul class="space-y-3">
-                                <li class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-start space-x-3">
-                                    <i class="fa-solid fa-certificate text-brand-600 mt-1"></i>
-                                    <div>
-                                        <h4 class="font-bold text-slate-900 text-sm">AI Product Management</h4>
-                                        <p class="text-xs text-slate-500 mt-0.5">Airtribe • July 2026</p>
+                                <li class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-start justify-between gap-2">
+                                    <div class="flex items-start space-x-3">
+                                        <i class="fa-solid fa-certificate text-brand-600 mt-1"></i>
+                                        <div>
+                                            <h4 class="font-bold text-slate-900 text-sm">AI-First Product Management</h4>
+                                            <p class="text-xs text-slate-500 mt-0.5">Airtribe • July 2026</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-1.5 shrink-0">
+                                        <button onclick="openCertificateModal()" class="px-2.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-[11px] font-semibold transition-colors cursor-pointer" title="Preview Certificate">
+                                            View
+                                        </button>
+                                        <a href="https://space-mycohort-web.sgp1.cdn.digitaloceanspaces.com/hti/2026/07/04/EU10X3NE.png" target="_blank" rel="noopener noreferrer" class="p-1.5 rounded-lg bg-white border border-slate-200 hover:border-brand-300 text-slate-600 hover:text-brand-600 text-xs transition-colors" title="Open Certificate Link">
+                                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                        </a>
                                     </div>
                                 </li>
                                 <li class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-start space-x-3">
@@ -583,8 +589,8 @@
                                     <span class="text-xl" role="img" aria-label="Email">📧</span>
                                     <div>
                                         <div class="text-xs text-slate-400 font-medium">Email</div>
-                                        <a href="mailto:nimbhoremayuri@email.com" class="text-sm sm:text-base font-semibold text-white hover:text-brand-100 transition-colors">
-                                            nimbhoremayuri@email.com
+                                        <a href="mailto:nimbhoremayuri@gmail.com" class="text-sm sm:text-base font-semibold text-white hover:text-brand-100 transition-colors">
+                                            nimbhoremayuri@gmail.com
                                         </a>
                                     </div>
                                 </div>
@@ -610,12 +616,21 @@
                                 </a>
                             </div>
 
-                            <!-- Location -->
-                            <div class="flex items-center space-x-3.5 bg-white/5 border border-white/10 rounded-2xl p-4">
-                                <span class="text-xl" role="img" aria-label="Location">📍</span>
-                                <div>
-                                    <div class="text-xs text-slate-400 font-medium">Location</div>
-                                    <div class="text-sm sm:text-base font-semibold text-white">Pune, Maharashtra</div>
+                            <!-- Location & Phone -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="flex items-center space-x-3.5 bg-white/5 border border-white/10 rounded-2xl p-4">
+                                    <span class="text-xl" role="img" aria-label="Location">📍</span>
+                                    <div>
+                                        <div class="text-xs text-slate-400 font-medium">Location</div>
+                                        <div class="text-sm sm:text-base font-semibold text-white">Pune, Maharashtra</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3.5 bg-white/5 border border-white/10 rounded-2xl p-4">
+                                    <span class="text-xl" role="img" aria-label="Phone">📞</span>
+                                    <div>
+                                        <div class="text-xs text-slate-400 font-medium">Phone</div>
+                                        <a href="tel:+917218760799" class="text-sm sm:text-base font-semibold text-white hover:text-brand-100 transition-colors">+91 7218760799</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -641,11 +656,11 @@
                             <ul class="space-y-2.5 text-sm text-slate-600 mb-8">
                                 <li class="flex items-center space-x-2.5">
                                     <i class="fa-solid fa-check text-brand-600 text-xs"></i>
-                                    <span>Product Analytics & Digital Support at Ecolab</span>
+                                    <span>2+ Years Product Analytics & Digital Support at Ecolab</span>
                                 </li>
                                 <li class="flex items-center space-x-2.5">
                                     <i class="fa-solid fa-check text-brand-600 text-xs"></i>
-                                    <span>Zepto My Café Case Study Summary</span>
+                                    <span>Zepto My Café Case Study & Prototype Summary</span>
                                 </li>
                                 <li class="flex items-center space-x-2.5">
                                     <i class="fa-solid fa-check text-brand-600 text-xs"></i>
@@ -654,10 +669,10 @@
                             </ul>
 
                             <div class="space-y-3">
-                                <a href="Mayuri_Nimbhore_Resume.pdf" download="Mayuri_Nimbhore_Resume.pdf" onclick="handleResumeDownload(event)" class="w-full inline-flex items-center justify-center px-5 py-3.5 rounded-xl text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 transition-colors shadow-md shadow-brand-600/20">
+                                <button onclick="downloadResumePDF()" class="w-full inline-flex items-center justify-center px-5 py-3.5 rounded-xl text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 transition-colors shadow-md shadow-brand-600/20 cursor-pointer">
                                     <i class="fa-solid fa-download mr-2"></i>
                                     <span>Download Resume (PDF)</span>
-                                </a>
+                                </button>
                                 <button onclick="openResumeModal()" class="w-full inline-flex items-center justify-center px-5 py-3 rounded-xl text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer">
                                     <i class="fa-regular fa-eye mr-2"></i>
                                     <span>Quick Preview Resume</span>
@@ -676,7 +691,7 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
             <p>© 2026 Mayuri Nimbhore. Crafted with user-centric thinking.</p>
             <div class="flex items-center space-x-6">
-                <a href="mailto:nimbhoremayuri@email.com" class="hover:text-brand-600 transition-colors">Email</a>
+                <a href="mailto:nimbhoremayuri@gmail.com" class="hover:text-brand-600 transition-colors">Email</a>
                 <a href="https://www.linkedin.com/in/mayuri-nimbhore-481990328" target="_blank" rel="noopener noreferrer" class="hover:text-brand-600 transition-colors">LinkedIn</a>
                 <a href="#projects" class="hover:text-brand-600 transition-colors">Projects</a>
             </div>
@@ -788,7 +803,7 @@
     <!-- Modal 2: Resume Quick Preview -->
     <div id="resume-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
         <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200">
-            <div class="sticky top-0 bg-white/95 backdrop-blur-md px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+            <div class="sticky top-0 bg-white/95 backdrop-blur-md px-6 py-4 border-b border-slate-100 flex items-center justify-between z-10">
                 <div class="flex items-center space-x-2.5">
                     <i class="fa-solid fa-file-pdf text-rose-600 text-lg"></i>
                     <h3 class="font-display font-bold text-lg text-slate-900">Mayuri_Nimbhore_Resume.pdf</h3>
@@ -806,8 +821,8 @@
                         <p class="text-brand-600 font-semibold text-sm">Aspiring Product Manager | Product Analyst</p>
                     </div>
                     <div class="text-xs text-slate-500 space-y-1 sm:text-right">
-                        <p>📍 Pune, Maharashtra</p>
-                        <p>📧 nimbhoremayuri@email.com</p>
+                        <p>📍 Pune, Maharashtra &nbsp;|&nbsp; 📞 +91 7218760799</p>
+                        <p>📧 nimbhoremayuri@gmail.com</p>
                     </div>
                 </div>
 
@@ -815,17 +830,35 @@
                 <div>
                     <h5 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Professional Summary</h5>
                     <p class="text-sm text-slate-600 leading-relaxed">
-                        Product Analyst at Ecolab transitioning into Product Management with strong expertise in translating user behavior data into actionable product strategies, PRDs, and customer-centric solutions.
+                        Product-focused professional with 2+ years in technology and analytics, delivering 4+ business intelligence solutions that improved operational efficiency by 22% and increased repeat engagement by 30%. Specialized in driving data-led product strategies using AI, advanced analytics, and cross-functional collaboration to solve customer problems and elevate user retention.
                     </p>
                 </div>
 
                 <!-- Work Experience & Honors -->
                 <div>
-                    <h5 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Experience & Recognition</h5>
-                    <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200/70 space-y-2 text-xs text-slate-600">
-                        <div><strong class="text-slate-900">Product Analyst, Ecolab</strong> (Oct 2024 – Present) • <em>Customer Centricity Award (H1 2025): 20% operational efficiency gains</em></div>
-                        <div><strong class="text-slate-900">Technical Engineer, Ecolab</strong> (May 2023 – Oct 2024) • <em>STAR Award (H1 2024): 22% faster issue resolution</em></div>
-                        <div><strong class="text-slate-900">L1 Support Executive, Ecolab</strong> (May 2022 – May 2023)</div>
+                    <h5 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Work Experience (Ecolab • Pune)</h5>
+                    <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200/70 space-y-3.5 text-xs text-slate-600">
+                        <div>
+                            <div class="font-bold text-slate-900 text-sm">Product Analyst — Ecolab <span class="font-normal text-slate-500">(Oct 2024 – Present)</span></div>
+                            <ul class="list-disc pl-4 mt-1 space-y-1">
+                                <li>Led Power BI analytics for executive product leadership, accelerating decision cycles by 30% and improving field efficiency by 20%.</li>
+                                <li>Developed customer-centric analytics pipelines (+18% UX scores) and drove root cause optimizations (+25% reporting productivity).</li>
+                                <li><em>Customer Centricity Award (H1 2025)</em> for analytics projects improving operational performance.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <div class="font-bold text-slate-900 text-sm">Technical Engineer — Ecolab <span class="font-normal text-slate-500">(May 2023 – Oct 2024)</span></div>
+                            <ul class="list-disc pl-4 mt-1 space-y-1">
+                                <li>Delivered digital water treatment solutions with 99% reliability for 5+ enterprise clients and reduced incident response times by 22%.</li>
+                                <li>Analyzed user pain points to enable 3 digital adoption initiatives; awarded <em>STAR Award (H1 2024)</em>.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <div class="font-bold text-slate-900 text-sm">L1 Support Executive — Ecolab <span class="font-normal text-slate-500">(May 2022 – May 2023)</span></div>
+                            <ul class="list-disc pl-4 mt-1 space-y-1">
+                                <li>Managed EnVision, Ecolab3D, and ServiceNow platforms (98% uptime), improving resolution efficiency by 30% and driving 2 product improvement sprints.</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
@@ -833,9 +866,9 @@
                 <div>
                     <h5 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Product Management Project</h5>
                     <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200/70">
-                        <div class="font-bold text-slate-900 text-sm">Zepto My Café | Product Management Case Study</div>
+                        <div class="font-bold text-slate-900 text-sm">Increasing the 30-Day Repeat Order Rate in Zepto Café through "My Café"</div>
                         <p class="text-xs text-slate-600 mt-1">
-                            Conducted user research (67% repeat behavior), identified search friction in quick-commerce café workflows, and designed Smart Reorder, Snack Routine, and Team Orders targeting a 12% → 25% 30-day repeat rate.
+                            Defined product strategy targeting a 30% repeat order increase by introducing personalized reordering (Smart Reorder, Snack Routine) and collaborative Team Orders after analyzing user journeys, JTBDs, and competitor landscape.
                         </p>
                     </div>
                 </div>
@@ -845,17 +878,51 @@
                     <h5 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Education & Certifications</h5>
                     <p class="text-xs text-slate-700 leading-relaxed">
                         <strong>M.Sc. in Organic Chemistry</strong> – B.R. Gholap College, Pune (2019–2021) • <strong>B.Sc.</strong> – Mudhoji College, Phaltan (2016–2019)<br>
-                        <strong>Certifications:</strong> AI Product Management – Airtribe (July 2026) • Certified Business Analyst – Trainsmart Academy (Nov 2025)
+                        <strong>Certifications:</strong> AI-First Product Management – Airtribe (July 2026) <button onclick="closeResumeModal(); openCertificateModal();" class="text-brand-600 underline font-semibold cursor-pointer">[View Certificate]</button> • Certified Business Analyst – Trainsmart Academy (Nov 2025)
                     </p>
                 </div>
             </div>
 
             <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
-                <a href="Mayuri_Nimbhore_Resume.pdf" download="Mayuri_Nimbhore_Resume.pdf" onclick="handleResumeDownload(event)" class="inline-flex items-center px-5 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 transition-colors">
+                <button onclick="downloadResumePDF()" class="inline-flex items-center px-5 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 transition-colors cursor-pointer">
                     <i class="fa-solid fa-download mr-2"></i>
                     <span>Download PDF</span>
-                </a>
+                </button>
                 <button onclick="closeResumeModal()" class="px-5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-100 transition-colors cursor-pointer">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 3: Airtribe AI Product Management Certificate Preview -->
+    <div id="certificate-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/75 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[92vh] overflow-y-auto shadow-2xl border border-slate-200">
+            <div class="sticky top-0 bg-white/95 backdrop-blur-md px-6 py-4 border-b border-slate-100 flex items-center justify-between z-10">
+                <div class="flex items-center space-x-2.5">
+                    <i class="fa-solid fa-award text-amber-500 text-lg"></i>
+                    <h3 class="font-display font-bold text-base sm:text-lg text-slate-900">AI-First Product Management Certificate — Airtribe</h3>
+                </div>
+                <button onclick="closeCertificateModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors cursor-pointer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-4 sm:p-6 bg-slate-50 flex items-center justify-center">
+                <img 
+                    src="https://space-mycohort-web.sgp1.cdn.digitaloceanspaces.com/hti/2026/07/04/EU10X3NE.png" 
+                    alt="Mayuri Nimbhore - Airtribe AI Product Management Certificate" 
+                    onerror="this.onerror=null; this.src='https://placehold.co/800x560/eef2ff/4f46e5?text=Airtribe+AI+Product+Management+Certificate';"
+                    class="w-full h-auto rounded-2xl border border-slate-200 shadow-md"
+                >
+            </div>
+
+            <div class="px-6 py-4 bg-white border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+                <a href="https://space-mycohort-web.sgp1.cdn.digitaloceanspaces.com/hti/2026/07/04/EU10X3NE.png" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 transition-colors">
+                    <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i>
+                    <span>Open Full Resolution Image</span>
+                </a>
+                <button onclick="closeCertificateModal()" class="px-5 py-2.5 rounded-xl bg-slate-100 text-slate-700 text-sm font-semibold hover:bg-slate-200 transition-colors cursor-pointer">
                     Close
                 </button>
             </div>
@@ -864,13 +931,13 @@
 
     <!-- Interactive JavaScript -->
     <script>
-        // Progressive Fallback for Profile Image in Preview & Local Environments
+        // Progressive Fallback for Profile Image
         let photoFallbackStep = 0;
         const photoCandidates = [
-            '1770307243504 (1).png',
-            '1770307243504%20(1).png',
+            './1770307243504 (1)_2.png',
+            './1770307243504 (1).png',
             '1770307243504.png',
-            './1770307243504.png'
+            'https://placehold.co/600x600/eef2ff/4f46e5?text=Mayuri+Nimbhore'
         ];
 
         function handleProfileImageError(img) {
@@ -878,19 +945,7 @@
                 img.src = photoCandidates[photoFallbackStep++];
             } else {
                 img.onerror = null;
-                img.src = 'https://placehold.co/600x600/eef2ff/4f46e5?text=Mayuri+Nimbhore%0AClick+%22Set+Photo%22+to+Load';
             }
-        }
-
-        // Allow user to load their local photo directly in the browser preview
-        function previewUploadedPhoto(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const objectUrl = URL.createObjectURL(file);
-            const profileImg = document.getElementById('profile-photo');
-            profileImg.onerror = null;
-            profileImg.src = objectUrl;
-            showToast('Profile photo updated!');
         }
 
         // Mobile Navigation Toggle
@@ -930,23 +985,205 @@
 
         // Copy Email to Clipboard using execCommand fallback
         function copyEmail() {
-            const email = 'nimbhoremayuri@email.com';
+            const email = 'nimbhoremayuri@gmail.com';
             const tempInput = document.createElement('input');
             tempInput.value = email;
             document.body.appendChild(tempInput);
             tempInput.select();
             try {
                 document.execCommand('copy');
-                showToast('Email copied: nimbhoremayuri@email.com');
+                showToast('Email copied: nimbhoremayuri@gmail.com');
             } catch (err) {
-                showToast('Email: nimbhoremayuri@email.com', 'fa-solid fa-envelope text-brand-400');
+                showToast('Email: nimbhoremayuri@gmail.com', 'fa-solid fa-envelope text-brand-400');
             }
             document.body.removeChild(tempInput);
         }
 
-        // Handle Resume Download Feedback
-        function handleResumeDownload(event) {
-            showToast('Downloading Mayuri_Nimbhore_Resume.pdf...', 'fa-solid fa-file-arrow-down text-sky-400');
+        // Generate & Download Mayuri_Nimbhore_Resume.pdf directly in the browser for any visitor
+        function downloadResumePDF() {
+            try {
+                if (!window.jspdf || !window.jspdf.jsPDF) {
+                    throw new Error('PDF library still loading');
+                }
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+                const margin = 42;
+                const contentWidth = pageWidth - margin * 2;
+                let y = 46;
+
+                const checkPageBreak = (neededHeight) => {
+                    if (y + neededHeight > pageHeight - 40) {
+                        doc.addPage();
+                        y = 44;
+                    }
+                };
+
+                const addSectionHeader = (title) => {
+                    checkPageBreak(26);
+                    y += 8;
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(10.5);
+                    doc.setTextColor(30, 27, 75);
+                    doc.text(title.toUpperCase(), margin, y);
+                    y += 4;
+                    doc.setDrawColor(79, 70, 229);
+                    doc.setLineWidth(1);
+                    doc.line(margin, y, pageWidth - margin, y);
+                    y += 13;
+                };
+
+                const addBullet = (text) => {
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(9.2);
+                    doc.setTextColor(51, 65, 85);
+                    const lines = doc.splitTextToSize(text, contentWidth - 12);
+                    checkPageBreak(lines.length * 12 + 3);
+                    doc.text('•', margin + 2, y);
+                    doc.text(lines, margin + 12, y);
+                    y += lines.length * 12 + 3;
+                };
+
+                // Header
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(20);
+                doc.setTextColor(15, 23, 42);
+                doc.text('Mayuri Nimbhore', margin, y);
+                y += 15;
+
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9.5);
+                doc.setTextColor(71, 85, 105);
+                doc.text('Pune, Maharashtra  |  +91 7218760799  |  nimbhoremayuri@gmail.com  |  linkedin.com/in/mayuri-nimbhore-481990328', margin, y);
+                y += 10;
+
+                // Summary
+                addSectionHeader('Summary');
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9.3);
+                doc.setTextColor(51, 65, 85);
+                const summaryLines = doc.splitTextToSize(
+                    'Product-focused professional with 2+ years in technology and analytics, delivering 4+ business intelligence solutions that improved operational efficiency by 22% and increased repeat engagement by 30%. Specialized in driving data-led product strategies using AI, advanced analytics, and cross-functional collaboration to solve customer problems and elevate user retention.',
+                    contentWidth
+                );
+                doc.text(summaryLines, margin, y);
+                y += summaryLines.length * 12.5 + 4;
+
+                // Work Experience
+                addSectionHeader('Work Experience');
+
+                const roles = [
+                    {
+                        title: 'Product Analyst — Ecolab',
+                        meta: 'October 2024 – Present  |  Pune',
+                        bullets: [
+                            'Led the delivery of Power BI analytics for executive product leadership, enabling real-time KPI tracking and influencing product roadmap decisions; accelerated decision cycles by 30%.',
+                            'Partnered with engineering and business stakeholders to define data dashboard requirements, improving field efficiency by 20% through actionable Virtual Service Model insights.',
+                            'Developed customer-centric analytics pipelines, improving service delivery and increasing user experience scores by 18%.',
+                            'Drove root cause investigations and implemented optimizations, increasing reporting productivity by 25% and reducing manual intervention.',
+                            'Recognized with Customer Centricity Award (H1 2025) for leading analytics projects that improved operational performance and business outcomes.'
+                        ]
+                    },
+                    {
+                        title: 'Technical Engineer — Ecolab',
+                        meta: 'May 2023 – October 2024  |  Pune',
+                        bullets: [
+                            'Led cross-functional teams to deliver digital water treatment solutions, ensuring 99% product reliability for 5+ enterprise clients and supporting customer retention initiatives.',
+                            'Implemented remote resolution strategies, decreasing incident response times by 22% and directly enhancing product satisfaction scores.',
+                            'Analyzed user pain points to recommend product improvements, enabling 3 digital adoption initiatives and influencing feature prioritization.',
+                            'Received STAR Award (H1 2024) for leading mission-critical product support activities and driving measurable improvements in user outcomes.'
+                        ]
+                    },
+                    {
+                        title: 'L1 Support Executive — Ecolab',
+                        meta: 'May 2022 – May 2023  |  Pune',
+                        bullets: [
+                            'Managed support for digital platforms (EnVision, Ecolab3D, ServiceNow) ensuring 98% uptime and seamless user experience for enterprise customers.',
+                            'Optimized and documented troubleshooting workflows, increasing issue resolution efficiency by 30% and reducing ticket backlog.',
+                            'Collected and synthesized user feedback to drive 2 product improvement sprints focused on user pain point resolution.',
+                            'Contributed to creation of standard operating procedures that improved team productivity and enabled faster onboarding.'
+                        ]
+                    }
+                ];
+
+                roles.forEach((role) => {
+                    checkPageBreak(30);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(10);
+                    doc.setTextColor(15, 23, 42);
+                    doc.text(role.title, margin, y);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(9);
+                    doc.setTextColor(100, 116, 139);
+                    doc.text(role.meta, pageWidth - margin, y, { align: 'right' });
+                    y += 13;
+                    role.bullets.forEach(addBullet);
+                    y += 4;
+                });
+
+                // Skills
+                addSectionHeader('Skills');
+                const skillGroups = [
+                    'Product Management: Product Discovery, Product Strategy, Product Analytics, Product Roadmapping, Feature Prioritization (RICE, MOSCOW), Product Metrics and KPIs, User Story Mapping, Product Requirement Documents (PRD)',
+                    'Data Analytics: Power BI, Microsoft Excel, Business Intelligence, Data Visualization, Dashboard Development, Root Cause Analysis',
+                    'Business Analysis & Process: Requirement Gathering, Stakeholder Management, Business Process Mapping, Gap Analysis, BRD/FRD Documentation, Process Improvement, Agile, Scrum',
+                    'AI, Automation & Platforms: AI-assisted Product Development, ServiceNow'
+                ];
+                skillGroups.forEach((sg) => {
+                    const lines = doc.splitTextToSize(sg, contentWidth);
+                    checkPageBreak(lines.length * 12 + 4);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(9.1);
+                    doc.setTextColor(51, 65, 85);
+                    doc.text(lines, margin, y);
+                    y += lines.length * 12 + 3;
+                });
+
+                // Projects
+                addSectionHeader('Projects');
+                checkPageBreak(26);
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(9.8);
+                doc.setTextColor(15, 23, 42);
+                doc.text('Increasing the 30-Day Repeat Order Rate in Zepto Café through "My Café"', margin, y);
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(8.8);
+                doc.setTextColor(79, 70, 229);
+                doc.text('Prototype: prototype-mayurinimbhore-zeptomycafe.lovable.app', pageWidth - margin, y, { align: 'right' });
+                y += 13;
+                addBullet('Defined product strategy targeting a 30% repeat order increase for Zepto Café by introducing personalized reordering and collaborative ordering features after analyzing user journeys, JTBDs, and competitor landscape.');
+                addBullet('Led feature prioritization using business KPIs, mapped phased implementation roadmap, and delivered an interactive prototype influencing stakeholder buy-in for end-to-end solution adoption.');
+
+                // Education & Certifications
+                addSectionHeader('Education & Certifications');
+                const creds = [
+                    'Master of Science in Organic Chemistry — B.R. Gholap College, Pune (2019 – 2021)',
+                    'Bachelor of Science — Mudhoji College, Phaltan (2016 – 2019)',
+                    'AI Product Management — Airtribe (July 2026)  |  Certificate: space-mycohort-web.sgp1.cdn.digitaloceanspaces.com/hti/2026/07/04/EU10X3NE.png',
+                    'Certified Business Analyst — Trainsmart Academy (November 2025)'
+                ];
+                creds.forEach((c) => {
+                    const lines = doc.splitTextToSize(c, contentWidth);
+                    checkPageBreak(lines.length * 12 + 3);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(9.1);
+                    doc.setTextColor(51, 65, 85);
+                    doc.text(lines, margin, y);
+                    y += lines.length * 12 + 3;
+                });
+
+                // Honors & Awards
+                addSectionHeader('Honors & Awards');
+                addBullet('Customer Centricity Award (H1 2025) at Ecolab: Recognized for analytics projects that drove 20% operational efficiency gains and measurable customer experience improvements.');
+                addBullet('STAR Award (H1 2024) at Ecolab: Awarded for leading digital product support, enabling 22% faster issue resolution and marked user satisfaction growth.');
+
+                doc.save('Mayuri_Nimbhore_Resume.pdf');
+                showToast('Downloaded Mayuri_Nimbhore_Resume.pdf!', 'fa-solid fa-file-circle-check text-emerald-400');
+            } catch (err) {
+                openResumeModal();
+                showToast('Opened Resume Preview — use Print / Save as PDF if needed.', 'fa-solid fa-circle-info text-sky-400');
+            }
         }
 
         // Case Study Modal Controls
@@ -975,16 +1212,31 @@
             document.body.style.overflow = '';
         }
 
+        // Certificate Modal Controls
+        const certificateModal = document.getElementById('certificate-modal');
+        function openCertificateModal() {
+            certificateModal.classList.remove('hidden');
+            certificateModal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeCertificateModal() {
+            certificateModal.classList.add('hidden');
+            certificateModal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
         // Close modals on backdrop click or Escape key
         window.addEventListener('click', (e) => {
             if (e.target === caseStudyModal) closeCaseStudyModal();
             if (e.target === resumeModal) closeResumeModal();
+            if (e.target === certificateModal) closeCertificateModal();
         });
 
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeCaseStudyModal();
                 closeResumeModal();
+                closeCertificateModal();
             }
         });
     </script>
